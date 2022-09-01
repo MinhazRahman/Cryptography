@@ -60,6 +60,7 @@ public class ShiftCipher {
         return 0;
     }
 
+    // associate the letters of the English alphabet a,...,z with 0,...,25.
     public static Map<Character, Integer> getLetterPositionMap(){
         Map<Character, Integer> letterPositionMap = new HashMap<>();
         int position = 0;
