@@ -8,17 +8,32 @@ import java.util.Map;
  * OGWOPFGFHWOLPHLRLOLFDMFGQWBLWBWQOLKFWBYLBLYLFSFLJGRMQBOLWJVFP
  * FWQVHQWFFPQOQVFPQOCFPOGFWFJIGFQVHLHLROQVFGWJVFPFOLFHGQVQVFILE
  * OGQILHQFQGIQVVOSFAFGBWQVHQWIJVWJVFPFWHGFIWIHZZRQGBABHZQOCGFHX
+ *
+ *
+ * round double value to 2 decimal places: Math.round(value * 100.0) / 100.0
+ * truncate double value to 2 decimal places: Math.floor(value * 100) / 100;
+ *
  * */
 
 public class MonoAlphabeticShiftCipher {
 
-    public static Map<Character, Integer> generateLetterFrequencyMap(String ciphertext){
+    public static Map<Character, Double> generateLetterFrequencyMap(String ciphertext){
         Map<Character, Integer> letterFrequencyMap = new HashMap<>();
+        int n = ciphertext.length();
 
         for (char letter: ciphertext.toCharArray()){
             letterFrequencyMap.put(letter, letterFrequencyMap.getOrDefault(letter, 0) + 1);
         }
-        return letterFrequencyMap;
+
+        Map<Character, Double> letterAvgFrequencyMap = new HashMap<>();
+        for (char ch = 'A'; ch <= 'Z'; ch++){
+            if (letterFrequencyMap.containsKey(ch)){
+                double avg = (double) (letterFrequencyMap.get(ch) * 100) / n;
+                letterAvgFrequencyMap.put(ch, Math.floor(avg * 10) / 10); // truncate avg to 1 decimal place
+            }
+        }
+
+        return letterAvgFrequencyMap;
     }
 
     public static Map<Character, Double> getKnownLetterAvgFrequencyMap(){
@@ -52,18 +67,17 @@ public class MonoAlphabeticShiftCipher {
 
         return letterAvgFrequencyMap;
     }
+
     public static void main(String[] args) {
         String cipherText = "JGRMQOYGHMVBJWRWQFPWHGFFDQGFPFZRKBEEBJIZQQOCIBZKLFAFGQVFZFWWE"
                             + "OGWOPFGFHWOLPHLRLOLFDMFGQWBLWBWQOLKFWBYLBLYLFSFLJGRMQBOLWJVFP"
                             + "FWQVHQWFFPQOQVFPQOCFPOGFWFJIGFQVHLHLROQVFGWJVFPFOLFHGQVQVFILE"
                             + "OGQILHQFQGIQVVOSFAFGBWQVHQWIJVWJVFPFWHGFIWIHZZRQGBABHZQOCGFHX";
 
-        Map<Character, Integer> letterFrequencyMap = generateLetterFrequencyMap(cipherText);
-        int n = cipherText.length();
+        Map<Character, Double> letterAvgFrequencyMap = generateLetterFrequencyMap(cipherText);
         for (char ch = 'A'; ch <= 'Z'; ch++){
-            if (letterFrequencyMap.containsKey(ch)){
-                double avg = (double) (letterFrequencyMap.get(ch) * 100) / n;
-                System.out.println(ch + ": " + avg);
+            if (letterAvgFrequencyMap.containsKey(ch)){
+                System.out.println(ch + ": " + letterAvgFrequencyMap.get(ch));
             }
         }
     }
