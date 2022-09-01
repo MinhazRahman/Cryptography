@@ -1,10 +1,11 @@
 package classicCipher;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class ShiftCipher {
-    
+
     // Given a ciphertext, try decrypt with every possible key
     // Only one possibility will “make sense”
     public static void decryptCipherText(Map<Character, Integer> letters, String cipherText){
@@ -13,10 +14,12 @@ public class ShiftCipher {
         for (int key = 0; key < 26; key++){
             keySpace[key] = key;
         }
+        // convert the cipher text to lower case
+        String lowerCaseCipherText = cipherText.toLowerCase();
 
         // decrypt the ciphertext using all the possible 26 keys
         for (int key: keySpace){
-            String message = decrypt(letters, key, cipherText);
+            String message = decrypt(letters, key, lowerCaseCipherText);
             System.out.println("key: " + key + " message: " + message);
         }
     }
@@ -71,7 +74,9 @@ public class ShiftCipher {
         /** Ciphertext example:
          * ehjlqwkhdwwdfnqrz
          * uryybjbeyq
+         * OVDTHUFWVZZPISLRLFZHYLAOLYL
          * */
-        decryptCipherText(letters, "uryybjbeyq");
+        // only one possible outcome will make sense
+        decryptCipherText(letters, "OVDTHUFWVZZPISLRLFZHYLAOLYL");
     }
 }
