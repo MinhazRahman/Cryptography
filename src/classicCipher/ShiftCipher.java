@@ -32,7 +32,7 @@ public class ShiftCipher {
                 complement += 26;
             }
             int position = complement % 26;
-           char messageLetter = getLetterAfterShifting(position, letterPositionMap);
+           char messageLetter = getLetterAfterShiftingPosition(position, letterPositionMap);
             message.append(messageLetter);
         }
         return message.toString();
@@ -44,14 +44,14 @@ public class ShiftCipher {
         // iterate through the message and shift each letter by k position
         for (char ch: message.toCharArray()){
             int shiftedPosition = (letterPositionMap.get(ch) + key) % 26;
-            char cipherLetter = getLetterAfterShifting(shiftedPosition, letterPositionMap);
+            char cipherLetter = getLetterAfterShiftingPosition(shiftedPosition, letterPositionMap);
             cipherText.append(cipherLetter);
         }
 
         return cipherText.toString();
     }
 
-    public static Character getLetterAfterShifting(int position, Map<Character, Integer> letterPositionMap){
+    public static Character getLetterAfterShiftingPosition(int position, Map<Character, Integer> letterPositionMap){
         for (Map.Entry<Character, Integer> entry: letterPositionMap.entrySet()){
           if (entry.getValue() == position) return entry.getKey();
         }
