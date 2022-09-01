@@ -6,7 +6,7 @@ import java.util.Map;
 public class ShiftCipher {
     // Given a ciphertext, try decrypt with every possible key
     // Only one possibility will “make sense”
-    public static void decryptCipherText(String cipherText){
+    public static void bruteForceAttack(String cipherText){
         // key space K = {0...25}
         int[] keySpace = new int[26];
         for (int key = 0; key < 26; key++){
@@ -82,6 +82,6 @@ public class ShiftCipher {
          * OVDTHUFWVZZPISLRLFZHYLAOLYL
          * */
         // only one possible outcome will make sense
-        decryptCipherText("OVDTHUFWVZZPISLRLFZHYLAOLYL");
+        bruteForceAttack("OVDTHUFWVZZPISLRLFZHYLAOLYL");
     }
 }
