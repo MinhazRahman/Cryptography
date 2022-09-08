@@ -1,4 +1,4 @@
-package classicCipher;
+package Assignment1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
