@@ -20,7 +20,9 @@ import java.util.Map;
  * */
 
 public class AttackOnShiftCipher {
+    public static int ALPHABET_COUNT = 26;
 
+    // generate frequency of characters of english alphabet in cipher text
     public static Map<Character, Double> generateCipherTextCharacterFrequencyMap(String ciphertext){
         Map<Character, Integer> characterFrequencyMap = new HashMap<>();
         int n = ciphertext.length();
@@ -32,21 +34,23 @@ public class AttackOnShiftCipher {
             characterFrequencyMap.put(letter, characterFrequencyMap.getOrDefault(letter, 0) + 1);
         }
 
-        Map<Character, Double> letterAvgFrequencyMap = new HashMap<>();
+        Map<Character, Double> characterAvgFrequencyMap = new HashMap<>();
         for (char ch = 'a'; ch <= 'z'; ch++){
             if (characterFrequencyMap.containsKey(ch)){
                 double avg = (double) (characterFrequencyMap.get(ch) * 100) / n;
-                letterAvgFrequencyMap.put(ch, Math.floor((avg/100) * 1000) / 1000); // truncate avg to 3 decimal places
+                characterAvgFrequencyMap.put(ch, Math.floor((avg/100) * 1000) / 1000); // truncate avg to 3 decimal places
             }
         }
 
-        return letterAvgFrequencyMap;
+        return characterAvgFrequencyMap;
     }
 
+    // get the frequency of characters in English alphabet
     // let Pi, denote the frequency of the ith letter in the normal English text and 0 <= Pi <= 1,
     // For example, for i = 0, the frequency of letter 'a', P0 = 0.082 according to the Figure 1.3 in the text book.
     public static Map<Character, Double> getPlainTextCharacterFrequencyMap(){
         Map<Character, Double> characterAvgFrequencyMap = new HashMap<>();
+        // Frequency of characters in English alphabet
         characterAvgFrequencyMap.put('a', 0.082);
         characterAvgFrequencyMap.put('b', 0.015);
         characterAvgFrequencyMap.put('c', 0.028);
@@ -89,7 +93,7 @@ public class AttackOnShiftCipher {
     }
 
     // associate the letters of the English alphabet a,...,z with 0,...,25.
-    public static Map<Character, Integer> getLetterPositionMap(){
+    public static Map<Character, Integer> getCharacterPositionMap(){
         Map<Character, Integer> characterPositionMap = new HashMap<>();
         int position = 0;
         for (char ch = 'a'; ch <= 'z'; ch++){
@@ -99,8 +103,9 @@ public class AttackOnShiftCipher {
         return characterPositionMap;
     }
 
-    public static Character getLetterAfterShiftingPosition(int position){
-        Map<Character, Integer> characterPositionMap = getLetterPositionMap();
+    // get the cipher text character for the new position
+    public static Character getCharacterAfterShiftingPosition(int position){
+        Map<Character, Integer> characterPositionMap = getCharacterPositionMap();
 
         for (Map.Entry<Character, Integer> entry: characterPositionMap.entrySet()){
             if (entry.getValue() == position) return entry.getKey();
@@ -110,13 +115,13 @@ public class AttackOnShiftCipher {
 
     // compute the sum of multiplication the frequency of the ith letter in the normal text and
     // the frequency of the (i+j)th letter in the cipher text.
-    // compute sum of Pi*Qi+j where i is an integer and 0 <= i <= 25 for every integer j
+    // compute sum of (Pi)*(Qi+j) where i is an integer and 0 <= i <= 25 for every integer j
     // where 0 <= j <= 25
     public static Map<Integer, Double> computeIj(String cipherText){
         List<Double> doubleList = new ArrayList<>();
         Map<Integer, Double> map = new HashMap<>();
 
-        Map<Character, Integer> characterPositionMap = getLetterPositionMap();
+        Map<Character, Integer> characterPositionMap = getCharacterPositionMap();
         double Ij = 0.0;
         for (char ch = 'a'; ch <= 'z'; ch++){
             Ij = computePQ(ch, cipherText);
@@ -125,19 +130,19 @@ public class AttackOnShiftCipher {
             map.put(characterPositionMap.get(ch), Ij);
         }
         System.out.println("Closest Ij of 0.065 is: " + getClosestValue(doubleList, 0.065));
-        System.out.println("For j which is the Key is: " + getKey(map, 0.065));
+        System.out.println("The Key is: " + getKey(map, 0.065));
 
         return map;
     }
 
     public static double computePQ(char chj, String cipherText){
-        Map<Character, Integer> characterPositionMap = getLetterPositionMap();
+        Map<Character, Integer> characterPositionMap = getCharacterPositionMap();
         Map<Character, Double> p = getPlainTextCharacterFrequencyMap();
         Map<Character, Double> q = generateCipherTextCharacterFrequencyMap(cipherText);
         double sum = 0.0;
         for (char chi = 'a'; chi <= 'z'; chi++){
             int pos = (characterPositionMap.get(chi)+characterPositionMap.get(chj)) % 26;
-            char ch = getLetterAfterShiftingPosition(pos);
+            char ch = getCharacterAfterShiftingPosition(pos);
             if (p.containsKey(chi) && q.containsKey(ch)){
                 sum += p.get(chi) * q.get(ch);
             }
@@ -146,8 +151,8 @@ public class AttackOnShiftCipher {
     }
 
     public static String decrypt(int key, String cipherText){
-        Map<Character, Integer> characterPositionMap = getLetterPositionMap();
-        StringBuilder message = new StringBuilder();
+        Map<Character, Integer> characterPositionMap = getCharacterPositionMap();
+        StringBuilder plaintext = new StringBuilder();
 
         // convert the cipher text to lower case
         String lowerCasedCipherText = cipherText.toLowerCase();
@@ -156,13 +161,13 @@ public class AttackOnShiftCipher {
         for (char ch: lowerCasedCipherText.toCharArray()){
             int complement = characterPositionMap.get(ch) - key;
             if (complement < 0){ // if the complement is negative add 26 to it.
-                complement += 26;
+                complement += ALPHABET_COUNT;
             }
-            int position = complement % 26;
-            char messageLetter = getLetterAfterShiftingPosition(position);
-            message.append(messageLetter);
+            int newPosition = complement % ALPHABET_COUNT;
+            char plaintextChar = getCharacterAfterShiftingPosition(newPosition);
+            plaintext.append(plaintextChar);
         }
-        return message.toString();
+        return plaintext.toString();
     }
 
     // get the key by comparing the values of Ij with 0.065.
