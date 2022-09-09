@@ -43,31 +43,6 @@ public class AttackOnShiftCipher {
         return letterAvgFrequencyMap;
     }
 
-    public static Map<Integer, Double> generateCharacterPositionFrequencyMap(String ciphertext){
-        Map<Character, Integer> letterPositionMap = getLetterPositionMap();
-        Map<Character, Integer> letterFrequencyMap = new HashMap<>();
-        int n = ciphertext.length();
-
-        // convert the cipher text into lower case
-        String lowerCasedCipherText = ciphertext.toLowerCase();
-
-        for (char letter: lowerCasedCipherText.toCharArray()){
-            letterFrequencyMap.put(letter, letterFrequencyMap.getOrDefault(letter, 0) + 1);
-        }
-
-        Map<Integer, Double> letterPositionAvgFrequencyMap = new HashMap<>();
-        for (int ch = 'a'; ch <= 'z'; ch++){
-            if (letterFrequencyMap.containsKey(ch)){
-                double avg = (double) (letterFrequencyMap.get(ch) * 100) / n;
-                int position = letterPositionMap.get(ch);
-                letterPositionAvgFrequencyMap.put(position, avg); // truncate avg to 3 decimal places
-                // Math.floor((avg/100) * 1000) / 1000
-            }
-        }
-
-        return letterPositionAvgFrequencyMap;
-    }
-
     // let Pi, denote the frequency of the ith letter in the normal English text and 0 <= Pi <= 1,
     // For example, for i = 0, the frequency of letter 'a', P0 = 0.082 according to the Figure 1.3 in the text book.
     public static Map<Character, Double> getPlainTextCharacterFrequencyMap(){
@@ -100,38 +75,6 @@ public class AttackOnShiftCipher {
         characterAvgFrequencyMap.put('z', 0.001);
 
         return characterAvgFrequencyMap;
-    }
-
-    public static Map<Integer, Double> getPlainTextCharacterPositionAvgFrequencyMap(){
-        Map<Integer, Double> positionAvgFrequencyMap = new HashMap<>();
-        positionAvgFrequencyMap.put(0, 0.082);
-        positionAvgFrequencyMap.put(1, 0.015);
-        positionAvgFrequencyMap.put(2, 0.028);
-        positionAvgFrequencyMap.put(3, 0.043);
-        positionAvgFrequencyMap.put(4, 0.127);
-        positionAvgFrequencyMap.put(5, 0.022);
-        positionAvgFrequencyMap.put(6, 0.020);
-        positionAvgFrequencyMap.put(7, 0.061);
-        positionAvgFrequencyMap.put(8, 0.070);
-        positionAvgFrequencyMap.put(9, 0.002);
-        positionAvgFrequencyMap.put(10, 0.008);
-        positionAvgFrequencyMap.put(11, 0.040);
-        positionAvgFrequencyMap.put(12, 0.024);
-        positionAvgFrequencyMap.put(13, 0.067);
-        positionAvgFrequencyMap.put(14, 0.075);
-        positionAvgFrequencyMap.put(15, 0.019);
-        positionAvgFrequencyMap.put(16, 0.001);
-        positionAvgFrequencyMap.put(17, 0.060);
-        positionAvgFrequencyMap.put(18, 0.063);
-        positionAvgFrequencyMap.put(19, 0.091);
-        positionAvgFrequencyMap.put(20, 0.028);
-        positionAvgFrequencyMap.put(21, 0.010);
-        positionAvgFrequencyMap.put(22, 0.024);
-        positionAvgFrequencyMap.put(23, 0.002);
-        positionAvgFrequencyMap.put(24, 0.020);
-        positionAvgFrequencyMap.put(25, 0.001);
-
-        return positionAvgFrequencyMap;
     }
 
     // Calculate the sum of the frequency squared using Figure 1.3
