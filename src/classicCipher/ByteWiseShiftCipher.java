@@ -27,9 +27,6 @@ public class ByteWiseShiftCipher {
 
         // convert the hexKey string into base 16
         int key = Integer.parseInt(hexKey, 16);
-        System.out.println("Hex Key: " + hexKey);
-        System.out.println("Plaintext: " + plaintext);
-        System.out.println("Encrypted text: ");
 
         for (char ch: plaintext.toCharArray()){
             // typecast the plaintext character ch into ascii value
@@ -44,8 +41,6 @@ public class ByteWiseShiftCipher {
             hexStringCiphertext.append(hexString);
         }
 
-        // write the encrypted text into the ciphertext.txt file
-        writeIntoFile(hexStringCiphertext.toString(), "src/classicCipher/ciphertext.txt");
         return  hexStringCiphertext.toString();
     }
 
@@ -54,9 +49,6 @@ public class ByteWiseShiftCipher {
 
         // convert the hexKey string into decimal value
         int key = Integer.parseInt(hexKey, 16);
-        System.out.println("Hex Key: " + hexKey);
-        System.out.println("Ciphertext: " + ciphertext);
-        System.out.println("Decrypted text: ");
 
         // divide the ciphertext into groups of hex strings of length two
         for (int i = 0; i < ciphertext.length(); i += 2){
@@ -71,8 +63,6 @@ public class ByteWiseShiftCipher {
             sbPlaintext.append(character);
         }
 
-        // write the decrypted text into the plaintext.txt file
-        writeIntoFile(sbPlaintext.toString(), "src/classicCipher/plaintext.txt");
         return sbPlaintext.toString();
     }
 
@@ -97,15 +87,25 @@ public class ByteWiseShiftCipher {
     }
     
     public static void main(String[] args) throws Exception {
+        // read the hex string key from the key.txt file
         String hexKey = readFileAsString("src/classicCipher/key.txt");
         System.out.println("Hex Key: " + hexKey);
 
-        String plaintext = readFileAsString("src/classicCipher/original_plaintext.txt");
+        // read the plaintext from plaintext.txt file
+        String plaintext = readFileAsString("src/classicCipher/plaintext.txt");
+        System.out.println("\nPlaintext: \n" + plaintext);
 
+        // encrypt the plain text
         String ciphertext = encrypt(plaintext, hexKey);
-        System.out.println(ciphertext);
+        // write the encrypted text into the ciphertext.txt file
+        writeIntoFile(ciphertext, "src/classicCipher/ciphertext.txt");
+        // read the ciphertext from the ciphertext.txt file
+        ciphertext = readFileAsString("src/classicCipher/ciphertext.txt");
+        System.out.println("\nCiphertext in hex format: \n" + ciphertext);
 
-        System.out.println();
-        System.out.println(decrypt(ciphertext, hexKey));
+        String decryptedPlaintext = decrypt(ciphertext, hexKey);
+        // write the decrypted text into the original_plaintext.txt file
+        writeIntoFile(decryptedPlaintext, "src/classicCipher/original_plaintext.txt");
+        System.out.println("\nDecrypted original text: \n" + decryptedPlaintext);
     }
 }
