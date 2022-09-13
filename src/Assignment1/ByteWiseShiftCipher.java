@@ -1,4 +1,4 @@
-package classicCipher;
+package Assignment1;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -95,24 +95,24 @@ public class ByteWiseShiftCipher {
     
     public static void main(String[] args) throws Exception {
         // read the hex string key from the key.txt file
-        String hexKey = readFileAsString("src/classicCipher/key.txt");
+        String hexKey = readFileAsString("src/Assignment1/key.txt");
         System.out.println("Hex Key: " + hexKey);
 
         // read the plaintext from plaintext.txt file
-        String plaintext = readFileAsString("src/classicCipher/plaintext.txt");
+        String plaintext = readFileAsString("src/Assignment1/plaintext.txt");
         System.out.println("\nPlaintext: \n" + plaintext);
 
         // encrypt the plain text
         String ciphertext = encrypt(plaintext, hexKey);
         // write the encrypted text into the ciphertext.txt file
-        writeIntoFile(ciphertext, "src/classicCipher/ciphertext.txt");
+        writeIntoFile(ciphertext, "src/Assignment1/ciphertext.txt");
         // read the ciphertext from the ciphertext.txt file
-        ciphertext = readFileAsString("src/classicCipher/ciphertext.txt");
+        ciphertext = readFileAsString("src/Assignment1/ciphertext.txt");
         System.out.println("\nCiphertext in hex format: \n" + ciphertext);
 
         String decryptedPlaintext = decrypt(ciphertext, hexKey);
         // write the decrypted text into the original_plaintext.txt file
-        writeIntoFile(decryptedPlaintext, "src/classicCipher/original_plaintext.txt");
+        writeIntoFile(decryptedPlaintext, "src/Assignment1/original_plaintext.txt");
         System.out.println("\nDecrypted original text: \n" + decryptedPlaintext);
     }
 }
