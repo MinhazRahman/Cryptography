@@ -19,10 +19,14 @@ import java.util.Map;
  *
  * */
 
-public class AttackOnShiftCipher {
+public class ShiftCipher {
     public static int ALPHABET_COUNT = 26;
+    public static double SUM_OF_FREQUENCY_SQUARED = 0.065;
 
-    // generate frequency of characters of english alphabet in cipher text
+    /** Generate frequency of characters of english alphabet in cipher text
+     * @param ciphertext: the text to be analyzed
+     * returns character average frequency map in the ciphertext
+    */
     public static Map<Character, Double> generateCipherTextCharacterFrequencyMap(String ciphertext){
         Map<Character, Integer> characterFrequencyMap = new HashMap<>();
         int n = ciphertext.length();
@@ -45,9 +49,11 @@ public class AttackOnShiftCipher {
         return characterAvgFrequencyMap;
     }
 
-    // get the frequency of characters in English alphabet
-    // let Pi, denote the frequency of the ith letter in the normal English text and 0 <= Pi <= 1,
-    // For example, for i = 0, the frequency of letter 'a', P0 = 0.082 according to the Figure 1.3 in the text book.
+    /** Get the frequency of characters in English alphabet
+     * let Pi, denote the frequency of the ith letter in the normal English text and 0 <= Pi <= 1,
+     * For example, for i = 0, the frequency of letter 'a', P0 = 0.082 according to the Figure 1.3 in the text book.
+     * returns the character average frequency map in the English text
+     * */
     public static Map<Character, Double> getPlainTextCharacterFrequencyMap(){
         Map<Character, Double> characterAvgFrequencyMap = new HashMap<>();
         // Frequency of characters in English alphabet
@@ -81,8 +87,10 @@ public class AttackOnShiftCipher {
         return characterAvgFrequencyMap;
     }
 
-    // Calculate the sum of the frequency squared using Figure 1.3
-    // Pi^2 == 0.065 where i is the position of each letter in the English alphabet and 0 <= i <= 25
+    /** Calculate the sum of the frequency squared using Figure 1.3
+     * Pi^2 == 0.065 where i is the position of each letter in the English alphabet and 0 <= i <= 25
+     * returns the sum of the frequency squared
+     * */
     public static double getSumOfFrequencySquared(){
         Map<Character, Double> characterAvgFrequencyMap = getPlainTextCharacterFrequencyMap();
         double sum  = 0.0;
@@ -92,7 +100,9 @@ public class AttackOnShiftCipher {
         return sum; // Math.floor(sum * 100) / 1000
     }
 
-    // associate the letters of the English alphabet a,...,z with 0,...,25.
+    /** Associate the letters of the English alphabet a,...,z with 0,...,25.
+     * returns the character position map
+     * */
     public static Map<Character, Integer> getCharacterPositionMap(){
         Map<Character, Integer> characterPositionMap = new HashMap<>();
         int position = 0;
@@ -103,7 +113,11 @@ public class AttackOnShiftCipher {
         return characterPositionMap;
     }
 
-    // get the cipher text character for the new position
+    /** Get the cipher text character for the new position
+     * @param position: the new shifted position of a character
+     * returns the shifted character or zero
+     * */
+
     public static Character getCharacterAfterShiftingPosition(int position){
         Map<Character, Integer> characterPositionMap = getCharacterPositionMap();
 
@@ -113,28 +127,39 @@ public class AttackOnShiftCipher {
         return 0;
     }
 
-    // compute the sum of multiplication the frequency of the ith letter in the normal text and
-    // the frequency of the (i+j)th letter in the cipher text.
-    // compute sum of (Pi)*(Qi+j) where i is an integer and 0 <= i <= 25 for every integer j
-    // where 0 <= j <= 25
+    /** Compute the sum of multiplication the frequency of the ith letter in the normal text and
+     * the frequency of the (i+j)th letter in the cipher text.
+     *
+     * Compute sum of (Pi)*(Qi+j) where i is an integer and 0 <= i <= 25 for every integer j
+     * where 0 <= j <= 25
+     * @param cipherText: ciphertext to be analyzed
+     * returns a map of type <Ij><Double> where Ij is the key and value is of Double type
+     * */
     public static Map<Integer, Double> computeIj(String cipherText){
         List<Double> doubleList = new ArrayList<>();
         Map<Integer, Double> map = new HashMap<>();
 
         Map<Character, Integer> characterPositionMap = getCharacterPositionMap();
         double Ij = 0.0;
+        // iterate over from character 'a' to 'z'
         for (char ch = 'a'; ch <= 'z'; ch++){
             Ij = computePQ(ch, cipherText);
             System.out.println("I" + characterPositionMap.get(ch)  + ": "+ Ij);
             doubleList.add(Ij);
             map.put(characterPositionMap.get(ch), Ij);
         }
-        System.out.println("Closest Ij of 0.065 is: " + getClosestValue(doubleList, 0.065));
-        System.out.println("The Key is: " + getKey(map, 0.065));
+        System.out.println("Closest Ij of SUM_OF_FREQUENCY_SQUARED(0.065) is: " + getClosestValue(doubleList, SUM_OF_FREQUENCY_SQUARED));
+        System.out.println("The Key is: " + getKey(map, SUM_OF_FREQUENCY_SQUARED));
 
         return map;
     }
 
+    /** Compute PQ where P is the frequency of the normal text and
+     * Q is the frequency of cipher text
+     * @param chj: character at the jth position in the character position map
+     * @param cipherText: cipher text to be analyzed
+     * returns the sum of Pi*Q(i+j) for 0 <= i <= 25 for a particular value of j
+     * */
     public static double computePQ(char chj, String cipherText){
         Map<Character, Integer> characterPositionMap = getCharacterPositionMap();
         Map<Character, Double> p = getPlainTextCharacterFrequencyMap();
@@ -150,7 +175,48 @@ public class AttackOnShiftCipher {
         return sum;
     }
 
-    public static String decrypt(int key, String cipherText){
+    /** Get the key by comparing the values of Ij with SUM_OF_FREQUENCY_SQUARED = 0.065.
+     * The value j is the key for which Ij is closest to SUM_OF_FREQUENCY_SQUARED = 0.065
+     * @param characterPositionIjMap: a map of the format <characterPosition><Ij>
+     * @param target: double value we want to compare with
+     * */
+    public static int getKey(Map<Integer, Double> characterPositionIjMap, double target){
+        double closestValue = 0.0;
+        int key = 0;
+        double current = Double.MAX_VALUE;
+        for (Map.Entry<Integer, Double> entry: characterPositionIjMap.entrySet()) {
+            Double value = entry.getValue();
+            if (Math.abs(value - target) < current) {
+                closestValue = value;
+                key = entry.getKey();
+                current = Math.abs(value - target);
+            }
+        }
+        return key;
+    }
+
+    /** Get the closest value of target from a given list of values
+     * @param list: contains a list of value of type double
+     * @param target: a given value that we want to compare with
+     * */
+    public static Double getClosestValue(List<Double> list, double target){
+        double answer = list.get(0);
+        double current = Double.MAX_VALUE;
+        for (Double value : list) {
+            if (Math.abs(value - target) < current) {
+                answer = value;
+                current = Math.abs(value - target);
+            }
+        }
+
+        return answer;
+    }
+
+    /** Decrypts the ciphertext using the Shift cipher with the key provided.
+     * @param cipherText: the text to be decrypted
+     * @param key: the key to decrypt the ciphertext-must be from 0 to 25.
+     * */
+    public static String decrypt(String cipherText, int key){
         Map<Character, Integer> characterPositionMap = getCharacterPositionMap();
         StringBuilder plaintext = new StringBuilder();
 
@@ -168,36 +234,6 @@ public class AttackOnShiftCipher {
             plaintext.append(plaintextChar);
         }
         return plaintext.toString();
-    }
-
-    // get the key by comparing the values of Ij with 0.065.
-    // The value j is the key for which Ij is closest to 0.065
-    public static int getKey(Map<Integer, Double> map, double x){
-        double closestValue = 0.0;
-        int key = 0;
-        double current = Double.MAX_VALUE;
-        for (Map.Entry<Integer, Double> entry: map.entrySet()) {
-            Double value = entry.getValue();
-            if (Math.abs(value - x) < current) {
-                closestValue = value;
-                key = entry.getKey();
-                current = Math.abs(value - x);
-            }
-        }
-        return key;
-    }
-
-    public static Double getClosestValue(List<Double> list, double x){
-        double answer = list.get(0);
-        double current = Double.MAX_VALUE;
-        for (Double value : list) {
-            if (Math.abs(value - x) < current) {
-                answer = value;
-                current = Math.abs(value - x);
-            }
-        }
-
-        return answer;
     }
 
     public static void main(String[] args) {
@@ -221,9 +257,9 @@ public class AttackOnShiftCipher {
         System.out.println("Ij (I0...I25) values: ");
         Map<Integer, Double> map = computeIj(cipherText);
 
-        int key = getKey(map, 0.065);
+        int key = getKey(map, SUM_OF_FREQUENCY_SQUARED);
 
         System.out.println("Decrypted Plain Text: ");
-        System.out.println(decrypt(key, cipherText));
+        System.out.println(decrypt(cipherText, key));
     }
 }
