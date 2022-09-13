@@ -100,7 +100,7 @@ public class ByteWiseShiftCipher {
 
         // read the plaintext from plaintext.txt file
         String plaintext = readFileAsString("src/Assignment1/plaintext.txt");
-        System.out.println("\nPlaintext: \n" + plaintext);
+        System.out.println("Plaintext: \n" + plaintext);
 
         // encrypt the plain text
         String ciphertext = encrypt(plaintext, hexKey);
@@ -113,6 +113,6 @@ public class ByteWiseShiftCipher {
         String decryptedPlaintext = decrypt(ciphertext, hexKey);
         // write the decrypted text into the original_plaintext.txt file
         writeIntoFile(decryptedPlaintext, "src/Assignment1/original_plaintext.txt");
-        System.out.println("\nDecrypted original text: \n" + decryptedPlaintext);
+        System.out.println("Decrypted original text: \n" + decryptedPlaintext);
     }
 }
