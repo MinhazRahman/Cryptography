@@ -16,7 +16,6 @@ import java.nio.file.Paths;
  * an emphasis on definitions assumptions and proofs distinguishes modern cryptography from classical
  * cryptography we now discuss these three principles in greater detail
  *
- *
  * */
 
 public class ByteWiseShiftCipher {
@@ -27,7 +26,9 @@ public class ByteWiseShiftCipher {
      * in range [0, 256] the function encrypts the text by performing
      * XOR of all the bytes and the `hexKey` and returns the resultant ciphertext
      * in the format of hex symbols.
-     *
+     * @param plaintext: text to be encrypted
+     * @param hexKey: two hex symbols
+     * returns the ciphertext as string
      * */
     public static String encrypt(String plaintext, String hexKey) throws IOException {
         StringBuilder hexStringCiphertext = new StringBuilder();
@@ -50,7 +51,15 @@ public class ByteWiseShiftCipher {
 
         return  hexStringCiphertext.toString();
     }
-
+    /**
+     * Given a cipher text `ciphertext` as bytes and an encryption key `hexKey` as a byte
+     * in range [0, 256] the function decrypts the text by performing
+     * XOR of all the bytes and the `hexKey` and returns the resultant original plain text
+     * in the format of english characters.
+     * @param ciphertext: cipher text to be decrypted
+     * @param hexKey: two hex symbols
+     * returns the original text as a string
+     * */
     public static String decrypt(String ciphertext, String hexKey) throws IOException {
         StringBuilder sbPlaintext = new StringBuilder();
 
@@ -73,6 +82,10 @@ public class ByteWiseShiftCipher {
         return sbPlaintext.toString();
     }
 
+    /** Reads the content of a file
+     * @param fileName: name of the file
+     * returns the contents of the file as a string
+     * */
     public static String readFileAsString(String fileName)throws Exception
     {
         String data = "";
@@ -80,6 +93,10 @@ public class ByteWiseShiftCipher {
         return data;
     }
 
+    /** Writes into a file
+     * @param text: text to be written into the file
+     * @param fileName: name of the file
+     * */
     public static void writeIntoFile(String text, String fileName) throws IOException {
         // Create a FileWriter object
         // to write in the file

@@ -244,13 +244,6 @@ public class ShiftCipher {
                             + "DSMUCRSCRKXNSXDYDROLOOBQBKLCDROPVILIDROGSXQCKXNCRYEDCCZSDSD"
                             + "YEDCZSDSDYEDBOKNOBCNSQOCDPOLBEKBIDGYDRYECKXNDOX";
 
-        System.out.println("Plain text character frequency mapping: ");
-        Map<Character, Double> characterFrequencyMap = generateCipherTextCharacterFrequencyMap(cipherText);
-        for (char ch = 'a'; ch <= 'z'; ch++){
-            if (characterFrequencyMap.containsKey(ch)){
-                System.out.println(ch + ": " + characterFrequencyMap.get(ch));
-            }
-        }
         // get the sum of the frequency squared
         System.out.println("Sum of the frequency squared: " + getSumOfFrequencySquared());
 
